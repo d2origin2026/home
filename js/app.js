@@ -1,19 +1,17 @@
-fetch("data/pdfs.json")
-  .then(res => res.json())
-  .then(data => {
+// ============================================================
+//  보여줄 PDF 목록 설정
+//  - pdf/ 폴더에 PDF 파일을 올린 뒤, 아래 목록에 추가하세요.
+//  - 1개면 자동으로 바로 보입니다.
+//  - 여러 개면 화면 상단에 선택 메뉴가 생깁니다.
+// ============================================================
 
-    const list = document.getElementById("pdf-list");
+window.PDF_FILES = [
+  {
+    src: "pdf/guide.pdf",   // pdf/ 폴더 기준 파일 경로
+    title: "가이드"          // 화면/선택 메뉴에 표시될 이름
+  },
 
-    data.forEach(pdf => {
-
-      const a = document.createElement("a");
-
-      a.className = "card";
-      a.href = `viewer.html?file=${pdf.file}`;
-
-      a.innerHTML = `<h3>${pdf.title}</h3>`;
-
-      list.appendChild(a);
-    });
-
-  });
+  // 여러 개 보여주려면 이렇게 추가:
+  // { src: "pdf/회사소개서.pdf", title: "회사 소개서" },
+  // { src: "pdf/2026-요금제.pdf", title: "2026 요금제 안내" },
+];

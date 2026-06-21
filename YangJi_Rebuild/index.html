@@ -15,13 +15,9 @@
     --accent: #4f8cff;
     --accent-hover: #3d79ee;
     --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-    --radius: 14px;
   }
-
   * { box-sizing: border-box; }
-
   html, body { margin: 0; height: 100%; }
-
   body {
     background: var(--bg);
     color: var(--text);
@@ -32,7 +28,6 @@
     min-height: 100%;
   }
 
-  /* ---------- Header ---------- */
   header {
     position: sticky;
     top: 0;
@@ -45,143 +40,74 @@
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
   }
-
   .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 16px;
-    white-space: nowrap;
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 16px; white-space: nowrap;
   }
   .brand .logo {
-    width: 28px; height: 28px;
-    border-radius: 8px;
+    width: 28px; height: 28px; border-radius: 8px;
     background: linear-gradient(135deg, var(--accent), #8b5cf6);
-    display: grid; place-items: center;
-    font-size: 15px;
+    display: grid; place-items: center; font-size: 15px;
   }
-
   .doc-title {
-    color: var(--muted);
-    font-size: 13px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-    min-width: 0;
+    color: var(--muted); font-size: 13px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    flex: 1; min-width: 0;
   }
-
-  .actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: auto;
-  }
+  .actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 
   select, button {
-    font: inherit;
-    cursor: pointer;
+    font: inherit; cursor: pointer;
     border: 1px solid var(--border);
-    background: var(--panel-2);
-    color: var(--text);
-    border-radius: 10px;
-    padding: 8px 12px;
+    background: var(--panel-2); color: var(--text);
+    border-radius: 10px; padding: 8px 12px;
   }
-  button {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: background 0.15s, border-color 0.15s, opacity 0.15s;
-  }
+  button { display: inline-flex; align-items: center; gap: 6px;
+    transition: background 0.15s, border-color 0.15s, opacity 0.15s; }
   button:hover:not(:disabled) { background: #272c36; }
   button:disabled { opacity: 0.4; cursor: not-allowed; }
-  button.primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    font-weight: 600;
-  }
-  button.primary:hover:not(:disabled) { background: var(--accent-hover); }
   .btn-label { display: inline; }
   select { max-width: 200px; }
 
-  /* ---------- Main ---------- */
   main { flex: 1; display: flex; flex-direction: column; }
-
   .viewer {
-    flex: 1;
-    padding: 20px 16px 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
+    flex: 1; padding: 20px 16px 60px;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
   }
-
   .page-wrap {
-    width: 100%;
-    max-width: 900px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    position: relative;
+    width: 100%; max-width: 900px;
+    background: #fff; border-radius: 8px;
+    box-shadow: var(--shadow); overflow: hidden; position: relative;
   }
   .page-wrap canvas { display: block; width: 100%; height: auto; }
   .page-num {
-    position: absolute;
-    bottom: 8px; right: 10px;
-    background: rgba(0, 0, 0, 0.55);
-    color: #fff;
-    font-size: 12px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    pointer-events: none;
+    position: absolute; bottom: 8px; right: 10px;
+    background: rgba(0, 0, 0, 0.55); color: #fff;
+    font-size: 12px; padding: 2px 8px; border-radius: 999px; pointer-events: none;
   }
 
-  /* ---------- Centered message (empty / error / loading) ---------- */
   .message {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 14px;
-    padding: 40px 24px;
-    color: var(--muted);
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    gap: 14px; padding: 40px 24px; color: var(--muted);
   }
   .message .big-icon { font-size: 52px; line-height: 1; }
   .message h2 { margin: 0; color: var(--text); font-size: 19px; }
   .message p { margin: 0; font-size: 14px; max-width: 460px; line-height: 1.6; }
   .message code {
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 2px 6px;
-    font-size: 13px;
-    color: var(--text);
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 2px 6px; font-size: 13px; color: var(--text);
   }
 
   .status {
-    position: fixed;
-    left: 50%; bottom: 24px;
-    transform: translateX(-50%);
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 8px 16px;
-    font-size: 13px;
-    color: var(--muted);
-    box-shadow: var(--shadow);
-    z-index: 30;
-    display: none;
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; font-size: 13px; color: var(--muted);
+    box-shadow: var(--shadow); z-index: 30; display: none;
   }
   .status.show { display: block; }
-
   .hidden { display: none !important; }
 
-  /* ---------- Responsive (mobile) ---------- */
   @media (max-width: 600px) {
     header { padding: 10px 12px; gap: 8px; }
     .brand span.title { display: none; }
@@ -218,129 +144,57 @@
 
   <div class="status" id="status"></div>
 
-  <script src="../js/app.js"></script>
-  <script type="module">
-    import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+  <!--
+    ▼▼▼ 설정: 이 블록만 수정하세요 ▼▼▼
+    - 이 index.html은 어느 폴더 깊이에 두어도 동일하게 동작합니다.
+    - js/app.js, pdf/ 는 "사이트 루트"에 1개씩만 두면 됩니다.
+    - file 에는 pdf/ 폴더 안의 파일명만 적으세요.
+  -->
+  <script>
+    window.PDF_CONFIG = {
+      files: [
+        { file: "guide.pdf", title: "가이드" },
+        // { file: "다른문서.pdf", title: "다른 문서" },
+      ],
+      // js/app.js, pdf/ 를 찾기 위해 위로 올라갈 최대 단계 수
+      maxDepth: 6,
+    };
+  </script>
+  <!-- ▲▲▲ 설정 끝 ▲▲▲ -->
 
-    const viewer = document.getElementById("viewer");
-    const messageEl = document.getElementById("message");
-    const docTitleEl = document.getElementById("docTitle");
-    const picker = document.getElementById("picker");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const statusEl = document.getElementById("status");
+  <!-- 부트스트랩: 루트(js/app.js 위치)를 위로 탐색해 찾고 앱을 로드 -->
+  <script>
+    (async function () {
+      const cfg = window.PDF_CONFIG || {};
+      const maxDepth = Number.isInteger(cfg.maxDepth) ? cfg.maxDepth : 6;
+      const messageEl = document.getElementById("message");
 
-    const files = Array.isArray(window.PDF_FILES) ? window.PDF_FILES : [];
-    let current = null; // { src, title }
+      let prefix = "", found = false;
+      for (let i = 0; i <= maxDepth; i++) {
+        try {
+          const res = await fetch(prefix + "js/app.js", { method: "HEAD" });
+          if (res.ok) { found = true; break; }
+        } catch (e) { /* 무시하고 위로 */ }
+        prefix += "../";
+      }
 
-    function setStatus(msg) {
-      if (!msg) { statusEl.classList.remove("show"); return; }
-      statusEl.textContent = msg;
-      statusEl.classList.add("show");
-    }
+      if (!found) {
+        messageEl.innerHTML =
+          '<div class="big-icon">⚠️</div><h2>js/app.js 를 찾지 못했어요</h2>' +
+          '<p>사이트 루트에 <code>js/app.js</code> 가 있는지, 또는 위 <code>maxDepth</code> 값을 늘려보세요.</p>';
+        return;
+      }
 
-    function showMessage(icon, title, html) {
-      viewer.classList.add("hidden");
-      messageEl.classList.remove("hidden");
-      messageEl.innerHTML =
-        `<div class="big-icon">${icon}</div><h2>${title}</h2>` +
-        (html ? `<p>${html}</p>` : "");
-    }
-
-    function getScale() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      return dpr * 1.5;
-    }
-
-    async function renderPdf(file) {
-      current = file;
-      docTitleEl.textContent = file.title || file.src;
-      downloadBtn.disabled = false;
-      showMessage("⏳", "불러오는 중…", "");
-      setStatus("불러오는 중…");
-
+      window.SITE_BASE = prefix; // 예: "" 또는 "../../"
       try {
-        const pdf = await pdfjsLib.getDocument(file.src).promise;
-        viewer.innerHTML = "";
-        messageEl.classList.add("hidden");
-        viewer.classList.remove("hidden");
-
-        const scale = getScale();
-        for (let i = 1; i <= pdf.numPages; i++) {
-          setStatus(`렌더링 중… ${i} / ${pdf.numPages}`);
-          const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale });
-
-          const wrap = document.createElement("div");
-          wrap.className = "page-wrap";
-          const canvas = document.createElement("canvas");
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          const ctx = canvas.getContext("2d");
-          const badge = document.createElement("div");
-          badge.className = "page-num";
-          badge.textContent = `${i} / ${pdf.numPages}`;
-
-          wrap.appendChild(canvas);
-          wrap.appendChild(badge);
-          viewer.appendChild(wrap);
-          await page.render({ canvasContext: ctx, viewport }).promise;
-        }
-        setStatus("");
-        window.scrollTo({ top: 0 });
-      } catch (err) {
-        console.error(err);
-        setStatus("");
-        showMessage(
-          "⚠️",
-          "PDF를 불러오지 못했어요",
-          `<code>${file.src}</code> 파일이 있는지, <code>config.js</code>의 경로가 맞는지 확인해 주세요.`
-        );
+        await import(prefix + "js/app.js");
+      } catch (e) {
+        console.error(e);
+        messageEl.innerHTML =
+          '<div class="big-icon">⚠️</div><h2>앱을 불러오지 못했어요</h2>' +
+          '<p>브라우저 콘솔의 오류를 확인해 주세요.</p>';
       }
-    }
-
-    // 원본 PDF 그대로 다운로드
-    downloadBtn.addEventListener("click", async () => {
-      if (!current) return;
-      try {
-        const res = await fetch(current.src);
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = current.src.split("/").pop() || "document.pdf";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      } catch (err) {
-        console.error(err);
-        // 폴백: 새 탭에서 열기
-        window.open(current.src, "_blank");
-      }
-    });
-
-    // ---- 초기화 ----
-    if (files.length === 0) {
-      showMessage(
-        "📂",
-        "표시할 PDF가 없어요",
-        "<code>pdf/</code> 폴더에 PDF를 올리고 <code>config.js</code>의 목록에 추가해 주세요."
-      );
-    } else {
-      if (files.length > 1) {
-        picker.classList.remove("hidden");
-        files.forEach((f, i) => {
-          const opt = document.createElement("option");
-          opt.value = String(i);
-          opt.textContent = f.title || f.src;
-          picker.appendChild(opt);
-        });
-        picker.addEventListener("change", () => renderPdf(files[+picker.value]));
-      }
-      renderPdf(files[0]);
-    }
+    })();
   </script>
 </body>
 </html>

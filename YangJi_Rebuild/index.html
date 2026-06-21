@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PDF 뷰어</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --panel-2: #1f232c;
+    --border: #2a2f3a;
+    --text: #e8eaed;
+    --muted: #9aa3b2;
+    --accent: #4f8cff;
+    --accent-hover: #3d79ee;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(15, 17, 21, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+  .brand .logo {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    display: grid; place-items: center;
+    font-size: 15px;
+  }
+
+  .doc-title {
+    color: var(--muted);
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  select, button {
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 12px;
+  }
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+  }
+  button:hover:not(:disabled) { background: #272c36; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  button.primary:hover:not(:disabled) { background: var(--accent-hover); }
+  .btn-label { display: inline; }
+  select { max-width: 200px; }
+
+  /* ---------- Main ---------- */
+  main { flex: 1; display: flex; flex-direction: column; }
+
+  .viewer {
+    flex: 1;
+    padding: 20px 16px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .page-wrap {
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    position: relative;
+  }
+  .page-wrap canvas { display: block; width: 100%; height: auto; }
+  .page-num {
+    position: absolute;
+    bottom: 8px; right: 10px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+
+  /* ---------- Centered message (empty / error / loading) ---------- */
+  .message {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 14px;
+    padding: 40px 24px;
+    color: var(--muted);
+  }
+  .message .big-icon { font-size: 52px; line-height: 1; }
+  .message h2 { margin: 0; color: var(--text); font-size: 19px; }
+  .message p { margin: 0; font-size: 14px; max-width: 460px; line-height: 1.6; }
+  .message code {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .status {
+    position: fixed;
+    left: 50%; bottom: 24px;
+    transform: translateX(-50%);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    box-shadow: var(--shadow);
+    z-index: 30;
+    display: none;
+  }
+  .status.show { display: block; }
+
+  .hidden { display: none !important; }
+
+  /* ---------- Responsive (mobile) ---------- */
+  @media (max-width: 600px) {
+    header { padding: 10px 12px; gap: 8px; }
+    .brand span.title { display: none; }
+    .btn-label { display: none; }
+    button { padding: 8px 10px; }
+    select { max-width: 130px; padding: 8px; }
+    .viewer { padding: 12px 8px 50px; gap: 12px; }
+    .page-wrap { border-radius: 6px; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">📄</span>
+      <span class="title">PDF 뷰어</span>
+    </div>
+    <span class="doc-title" id="docTitle"></span>
+    <div class="actions">
+      <select id="picker" class="hidden"></select>
+      <button id="downloadBtn" disabled>
+        <span>⬇️</span><span class="btn-label">다운로드</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="message" id="message">
+      <div class="big-icon">⏳</div>
+      <h2>불러오는 중…</h2>
+    </div>
+    <div class="viewer hidden" id="viewer"></div>
+  </main>
+
+  <div class="status" id="status"></div>
+
+  <script src="js/app.js"></script>
+  <script type="module">
+    import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+
+    const viewer = document.getElementById("viewer");
+    const messageEl = document.getElementById("message");
+    const docTitleEl = document.getElementById("docTitle");
+    const picker = document.getElementById("picker");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const statusEl = document.getElementById("status");
+
+    const files = Array.isArray(window.PDF_FILES) ? window.PDF_FILES : [];
+    let current = null; // { src, title }
+
+    function setStatus(msg) {
+      if (!msg) { statusEl.classList.remove("show"); return; }
+      statusEl.textContent = msg;
+      statusEl.classList.add("show");
+    }
+
+    function showMessage(icon, title, html) {
+      viewer.classList.add("hidden");
+      messageEl.classList.remove("hidden");
+      messageEl.innerHTML =
+        `<div class="big-icon">${icon}</div><h2>${title}</h2>` +
+        (html ? `<p>${html}</p>` : "");
+    }
+
+    function getScale() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      return dpr * 1.5;
+    }
+
+    async function renderPdf(file) {
+      current = file;
+      docTitleEl.textContent = file.title || file.src;
+      downloadBtn.disabled = false;
+      showMessage("⏳", "불러오는 중…", "");
+      setStatus("불러오는 중…");
+
+      try {
+        const pdf = await pdfjsLib.getDocument(file.src).promise;
+        viewer.innerHTML = "";
+        messageEl.classList.add("hidden");
+        viewer.classList.remove("hidden");
+
+        const scale = getScale();
+        for (let i = 1; i <= pdf.numPages; i++) {
+          setStatus(`렌더링 중… ${i} / ${pdf.numPages}`);
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale });
+
+          const wrap = document.createElement("div");
+          wrap.className = "page-wrap";
+          const canvas = document.createElement("canvas");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext("2d");
+          const badge = document.createElement("div");
+          badge.className = "page-num";
+          badge.textContent = `${i} / ${pdf.numPages}`;
+
+          wrap.appendChild(canvas);
+          wrap.appendChild(badge);
+          viewer.appendChild(wrap);
+          await page.render({ canvasContext: ctx, viewport }).promise;
+        }
+        setStatus("");
+        window.scrollTo({ top: 0 });
+      } catch (err) {
+        console.error(err);
+        setStatus("");
+        showMessage(
+          "⚠️",
+          "PDF를 불러오지 못했어요",
+          `<code>${file.src}</code> 파일이 있는지, <code>config.js</code>의 경로가 맞는지 확인해 주세요.`
+        );
+      }
+    }
+
+    // 원본 PDF 그대로 다운로드
+    downloadBtn.addEventListener("click", async () => {
+      if (!current) return;
+      try {
+        const res = await fetch(current.src);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = current.src.split("/").pop() || "document.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error(err);
+        // 폴백: 새 탭에서 열기
+        window.open(current.src, "_blank");
+      }
+    });
+
+    // ---- 초기화 ----
+    if (files.length === 0) {
+      showMessage(
+        "📂",
+        "표시할 PDF가 없어요",
+        "<code>pdf/</code> 폴더에 PDF를 올리고 <code>config.js</code>의 목록에 추가해 주세요."
+      );
+    } else {
+      if (files.length > 1) {
+        picker.classList.remove("hidden");
+        files.forEach((f, i) => {
+          const opt = document.createElement("option");
+          opt.value = String(i);
+          opt.textContent = f.title || f.src;
+          picker.appendChild(opt);
+        });
+        picker.addEventListener("change", () => renderPdf(files[+picker.value]));
+      }
+      renderPdf(files[0]);
+    }
+  </script>
+</body>
+</html>

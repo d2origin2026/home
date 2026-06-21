@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>이동 중…</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: #0f1115; color: #9aa3b2;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; gap: 14px;
+  }
+  .icon { font-size: 48px; }
+  h1 { color: #e8eaed; font-size: 18px; margin: 0; }
+  a { color: #4f8cff; }
+</style>
+</head>
+<body>
+  <div class="icon">🧭</div>
+  <h1>페이지를 찾을 수 없어요</h1>
+  <p id="msg">홈으로 이동 중…</p>
+
+  <!--
+    잘못된 경로로 들어오면 home/Yangji_rebuild/ 로 보냅니다.
+    - GitHub 프로젝트 페이지(/repo/...) / 유저·조직 페이지(/...) 모두 자동 대응
+      (실제로 존재하는 위치를 탐색해서 그쪽으로 이동)
+  -->
+  <script>
+    (async function () {
+      var l = window.location;
+      var TARGET = "home/Yangji_rebuild/"; // 사이트 루트 기준 이동 목적지
+
+      // 이미 목적지 경로 안이라면(목적지 자체가 없을 때) 루프 방지
+      if (l.pathname.indexOf("/" + TARGET) !== -1) {
+        document.getElementById("msg").innerHTML =
+          '목적지 <code>' + TARGET + '</code> 를 찾지 못했어요. ' +
+          '<a href="' + l.origin + '/">루트로</a>';
+        return;
+      }
+
+      var segs = l.pathname.split("/").filter(Boolean);
+
+      // 후보 base: 루트(유저페이지) 와 /firstSegment(프로젝트페이지)
+      var candidates = ["/" + TARGET];
+      if (segs.length) candidates.push("/" + segs[0] + "/" + TARGET);
+
+      for (var i = 0; i < candidates.length; i++) {
+        try {
+          var res = await fetch(candidates[i] + "index.html", { method: "HEAD" });
+          if (res.ok) { l.replace(l.origin + candidates[i]); return; }
+        } catch (e) { /* 다음 후보 */ }
+      }
+
+      // 못 찾으면 합리적 추정치로 이동 (프로젝트 페이지 우선 추정)
+      var fallback = (segs.length ? "/" + segs[0] : "") + "/" + TARGET;
+      l.replace(l.origin + fallback);
+    })();
+  </script>
+</body>
+</html>

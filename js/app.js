@@ -1,23 +1,19 @@
 fetch("data/pdfs.json")
-  .then(r => r.json())
+  .then(res => res.json())
   .then(data => {
 
     const list = document.getElementById("pdf-list");
 
     data.forEach(pdf => {
 
-      const card = document.createElement("a");
+      const a = document.createElement("a");
 
-      card.href =
-        `viewer.html?file=${pdf.file}`;
+      a.className = "card";
+      a.href = `viewer.html?file=${pdf.file}`;
 
-      card.className = "card";
+      a.innerHTML = `<h3>${pdf.title}</h3>`;
 
-      card.innerHTML =
-        `<h3>${pdf.title}</h3>`;
-
-      list.appendChild(card);
-
+      list.appendChild(a);
     });
 
   });
